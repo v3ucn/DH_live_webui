@@ -20,6 +20,8 @@ import requests
 
 initial_md = """
 
+官方项目地址：https://github.com/kleinlee/DH_live
+
 整合包制作:刘悦的技术博客 https://space.bilibili.com/3031494
 
 """
