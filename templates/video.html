@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Video Player</title>
+<style>
+
+.video-hide {
+  position: absolute;
+  top: -10000px;
+  left: -10000px;
+}
+    
+</style>
+<script type="text/javascript" src="/static/js/jquery-1.12.2.min.js"></script>
+<script type="text/javascript" src="/static/js/axios.min.js"></script>
+</head>
+<body>
+
+<!-- 视频播放区 -->
+<div id="video_box">
+    
+    <div>
+
+        <div>
+        文本内容:<input type="text" id="text" />
+        <input type="button" value="发送"  id="play" />
+        </div>
+
+        <div>
+            检查点视频:<input type="text" id="face" value="lip_53.mp4" />
+        </div>
+    
+    </div>
+    
+    <div>
+        <video width="250" id="vplayer_start" src="/static/lip_53.mp4" autoplay="false" webkit-playsinline="true" playsinline="true" x-webkit-airplay="allow" x5-video-player-type="h5" x5-video-player-fullscreen="true" x5-video-orientation="portraint" class="video-hide" style="overflow: hidden;"></video>
+        
+        <video width="250" id="vplayer" src="/static/53_quiet.mp4" autoplay="true" muted webkit-playsinline="true" playsinline="true" x5-video-player-type="h5" x5-video-player-fullscreen="true" x5-video-orientation="portraint" style="overflow: hidden;"></video> 
+    </div>
+
+</div>
+
+<script>
+    
+
+
+    
+    $(document).ready(function() {
+
+
+        $(document).keyup(function(event){  
+                  if(event.keyCode ==13){  
+                    $("#play").click();
+                  }  
+                });   
+
+
+        var vplayer_start = document.getElementById('vplayer_start');
+    var vplayer = document.getElementById('vplayer');
+
+    vplayer_start.pause();
+
+
+
+        
+        $("#play").click(function() {
+
+
+            $("#play").prop("disabled", true);
+
+                $.ajax({
+                url: "/make_video?face="+$("#face").val()+"&text="+$("#text").val(),
+                type: "GET",
+                dataType: "json",
+                async: true, // This line makes the request synchronous
+                success: function(data, status, xhr) {
+                // Process the data
+                console.log("Data: " + data);
+
+                $("#vplayer_start").attr("src","/static/1.mp4?num="+Math.random());
+
+                $("#play").prop("disabled", false);
+
+
+                vplayer_start.onloadeddata = function() { // 监听 loadeddata 事件
+          
+
+                    vplayer.pause(); // 暂停第二个视频
+                // vplayer_start.style.display = "block"; // 显示第一个视频
+                vplayer_start.classList.remove('video-hide');
+                // vplayer_start.style.visibility = "visible";
+                //vplayer.style.display = "none"; // Hide the second video
+                vplayer.classList.add('video-hide');
+
+                vplayer_start.play(); // 播放第一个视频
+
+                    
+            };
+
+
+                
+
+                },
+                error: function(xhr, status, error) {
+                    
+                $("#play").prop("disabled", false);
+                // Handle errors
+                console.error("Error: " + error);
+                }
+                });
+
+
+                
+                
+            
+            
+        });
+
+
+        // 第一个视频播放结束
+    vplayer_start.addEventListener("ended",function(e){
+
+        vplayer.src = "/static/53_quiet.mp4?num="+Math.random();
+        vplayer.preload = 'auto';
+
+
+        vplayer.onloadeddata = function() { // 监听 loadeddata 事件
+
+
+            vplayer_start.classList.add('video-hide');
+        vplayer.classList.remove('video-hide'); 
+
+        vplayer.play(); // 第一个视频播放结束后，播放第二个视频
+
+
+        }
+
+           
+
+
+     
+        
+        
+    });
+
+    // 第二个视频循环播放
+    vplayer.addEventListener("ended",function(e){
+        e.target.play();
+    });
+
+
+
+    });
+
+    // function play(){
+
+    //     $("#play").prop("disabled", true);
+
+    //             $.ajax({
+    //     url: "/make_video?face="+$("#face").val()+"&text="+$("#text").val(),
+    //     type: "GET",
+    //     dataType: "json",
+    //     async: false, // This line makes the request synchronous
+    //     success: function(data, status, xhr) {
+    //         // Process the data
+    //         console.log("Data: " + data);
+
+    //         $("#vplayer_start").attr("src","/static/1.mp4");
+
+    //         $("#play").prop("disabled", false);
+           
+    //     },
+    //     error: function(xhr, status, error) {
+    //         $("#play").prop("disabled", false);
+    //         // Handle errors
+    //         console.error("Error: " + error);
+    //     }
+    //     });
+        
+        
+    //     vplayer.pause(); // 暂停第二个视频
+    //     // vplayer_start.style.display = "block"; // 显示第一个视频
+    //     vplayer_start.classList.remove('video-hide');
+    //     // vplayer_start.style.visibility = "visible";
+    //     //vplayer.style.display = "none"; // Hide the second video
+    //     vplayer.classList.add('video-hide');
+        
+    //     vplayer_start.play(); // 播放第一个视频
+    // }
+
+    
+</script>
+
+</body>
+</html>

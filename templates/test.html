@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Video Element src Demo</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+        <style>
+        </style>
+    </head>
+
+    <body>
+        <video id="player" width="400" height="680" controls style="background:black"></video>
+        <script>
+        var player = document.getElementById('player')
+        var playlist = [
+          "/static/53_quiet.mp4",
+          "/static/lip_53.mp4",
+        ]
+        var activeVideo = 0
+        player.src = playlist[activeVideo]
+
+        player.addEventListener('ended', function(e) {
+          // update the new active video index
+          activeVideo = (++activeVideo) % playlist.length
+          player.src = playlist[activeVideo]
+          player.play()
+        })
+        </script>
+    </body>
+</html>

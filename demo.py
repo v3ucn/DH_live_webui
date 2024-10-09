@@ -48,8 +48,8 @@ def main():
     task_id = str(uuid.uuid1())
     os.makedirs("output/{}".format(task_id), exist_ok=True)
     # 定义编码器
-    fourcc = cv2.VideoWriter_fourcc(*'H264')
-    #fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    # fourcc = cv2.VideoWriter_fourcc(*'H264')
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     save_path = "output/{}/silence.mp4".format(task_id)
     videoWriter = cv2.VideoWriter(save_path, fourcc, 25, (int(vid_width) * 1, int(vid_height)))
     for frame in tqdm.tqdm(mouth_frame):
@@ -61,7 +61,7 @@ def main():
 
     videoWriter.release()
     val_video = "../output/{}.mp4".format(task_id)
-    os.system("ffmpeg -y -i {} -i {} -c:v copy -pix_fmt yuv420p -loglevel quiet {}".format(save_path, wavpath, output_video_name))
+    os.system("ffmpeg -y -i {} -i {} -c:v libx264 -pix_fmt yuv420p -loglevel quiet {}".format(save_path, wavpath, output_video_name))
     # os.system("ffmpeg -y -i {} -i {} -c:v libx264 -c:a copy -pix_fmt yuv420p -loglevel quiet {}".format(save_path, wavpath, output_video_name))
     shutil.rmtree("output/{}".format(task_id))
 
