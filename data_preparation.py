@@ -141,8 +141,8 @@ def ExtractFromVideo(video_path, circle = False):
 
 def CirculateVideo(video_in_path, video_out_path, export_imgs = False):
     # 1 视频转换为25FPS, 并折叠循环拼接
-    front_video_path = "./data/front.mp4"
-    back_video_path = "./data/back.mp4"
+    front_video_path = "front.mp4"
+    back_video_path = "back.mp4"
     # ffmpeg_cmd = "ffmpeg -i {} -r 25 -ss 00:00:00 -t 00:02:00 -an -loglevel quiet -y {}".format(video_in_path, front_video_path)
     ffmpeg_cmd = "ffmpeg -i {} -r 25 -an -loglevel quiet -y {}".format(video_in_path, front_video_path)
     os.system(ffmpeg_cmd)
@@ -158,7 +158,7 @@ def CirculateVideo(video_in_path, video_out_path, export_imgs = False):
 
     ffmpeg_cmd = "ffmpeg -i {} -vf reverse -y {}".format(front_video_path, back_video_path)
     os.system(ffmpeg_cmd)
-    ffmpeg_cmd = "ffmpeg -f concat -i {} -c:v copy -y {}".format("./data/video_concat.txt", video_out_path)
+    ffmpeg_cmd = "ffmpeg -f concat -i {} -c:v copy -y {}".format("video_concat.txt", video_out_path)
     os.system(ffmpeg_cmd)
     # exit()
     print("正向视频帧数：", frames)
@@ -221,9 +221,8 @@ def main():
     video_name = sys.argv[1]
     print(f"Video name is set to: {video_name}")
 
-    new_data_path = "video_data/{}".format(video_name)
+    new_data_path = "video_data/{}".format(uuid.uuid1())
     os.makedirs(new_data_path, exist_ok=True)
-
     video_out_path = "{}/circle.mp4".format(new_data_path)
     CirculateVideo(video_name, video_out_path, export_imgs=False)
 

@@ -94,11 +94,11 @@ def do_make(face):
 
     return "生成完成"
 
-def do_cloth(face,audio):
+def do_cloth(face,audio,model_name):
 
     convert_wav(audio)
 
-    cmd = fr".\py311\python.exe demo.py video_data/{face} new.wav 1.mp4"
+    cmd = fr".\py311\python.exe demo.py video_data/{face} new.wav 1.mp4 {model_name}"
 
     print(cmd)
     res = subprocess.Popen(cmd)
@@ -150,7 +150,7 @@ with gr.Blocks() as app:
             api_button.click(fn=request_api, inputs=[api_url], outputs=[uploaded_audio])
 
         with gr.Row():
-
+            model_name = gr.Textbox(label="推理使用的模型",value="render.pth")
             generate_button = gr.Button("生成数字人视频")
             second_button = gr.Button("视频结果面部超分")
 
@@ -167,7 +167,7 @@ with gr.Blocks() as app:
             
             
 
-    generate_button.click(do_cloth,inputs=[face,uploaded_audio],outputs=[output_video])
+    generate_button.click(do_cloth,inputs=[face,uploaded_audio,model_name],outputs=[output_video])
     make_button.click(do_make,inputs=[video],outputs=[result_text])
     # first_button.click(do_face_1,inputs=[video],outputs=[video])
     second_button.click(do_face_2,inputs=[output_video],outputs=[output_video])

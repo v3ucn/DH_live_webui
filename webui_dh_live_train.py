@@ -1,5 +1,6 @@
 import argparse
 import os
+import torch
 
 os.environ["no_proxy"] = "localhost, 127.0.0.1, ::1" 
 
@@ -29,7 +30,7 @@ initial_md = """
 
 def do_pre():
 
-    cmd = fr".\py311\python.exe train/data_preparation_face.py ./train/data "
+    cmd = fr".\py311\python.exe train/data_preparation_face.py ./train/data"
 
     print(cmd)
     res = subprocess.Popen(cmd)
@@ -49,15 +50,30 @@ def do_lip():
     return "唇形检测成功"
 
 
-def do_train():
+def do_train(epochs,nums):
 
-    cmd = fr".\py311\python.exe train/train_render_model.py --train_data ./train/data "
+    cmd = fr".\py311\python.exe train/train_render_model.py --train_data ./train/data --coarse2fine  --coarse_model_path './checkpoint/epoch_120.pth' --non_decay {epochs} --decay {nums}"
 
     print(cmd)
     res = subprocess.Popen(cmd)
     res.wait()
     
     return "训练完毕"
+
+def do_save(model,name):
+
+    #加载权至
+    checkpoint = torch.load(f'{model}')
+    #提舰netg
+    net_g_static = checkpoint['state_dict']['net_g']
+
+
+    #保存新权童
+    torch.save(net_g_static,f'checkpoint/{name}')
+
+    print("ok")
+
+    gr.Info("模型提取保存成功")
 
 
 
@@ -75,8 +91,15 @@ with gr.Blocks() as app:
             lip_text = gr.Textbox(label="唇形检测处理结果")
 
         with gr.Row():
+            epochs = gr.Textbox(label="训练轮数",value=f"20000")
+            nums = gr.Textbox(label="多少轮保存一次",value=f"1000")
             train_button = gr.Button("开始训练")
             train_text = gr.Textbox(label="训练结果")
+
+        with gr.Row():
+            newmodel = gr.Textbox(label="需要提取的模型",value="checkpoint/DiNet_five_ref/epoch_11000.pth",interactive=True)
+            newname = gr.Textbox(label="保存模型的名称",value=f"epoch_11000.pth",interactive=True)
+            save_button = gr.Button("保存模型")
             
 
 
@@ -84,7 +107,9 @@ with gr.Blocks() as app:
 
     lip_button.click(do_lip,inputs=[],outputs=[lip_text])
 
-    train_button.click(do_train,inputs=[],outputs=[train_text])
+    train_button.click(do_train,inputs=[epochs,nums],outputs=[train_text])
+
+    save_button.click(do_save,inputs=[newmodel,newname],outputs=[])
     
 if __name__ == '__main__':
     app.queue()
