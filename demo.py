@@ -11,7 +11,7 @@ from talkingface.render_model import RenderModel
 
 def main():
     # 检查命令行参数的数量
-    if len(sys.argv) != 5:
+    if len(sys.argv) < 4:
         print("Usage: python demo.py <video_path> <output_video_name> <model_name>")
         sys.exit(1)  # 参数数量不正确时退出程序
 
@@ -22,9 +22,11 @@ def main():
     print(f"Audio path is set to: {audio_path}")
     output_video_name = sys.argv[3]
     print(f"output video name is set to: {output_video_name}")
-
-    model_name = sys.argv[4]
-    print(f"model_name: {model_name}")
+    try:
+        model_name = sys.argv[4]
+        print(f"model_name: {model_name}")
+    except Exception:
+        model_name = "render.pth"
 
     audioModel = AudioModel()
     audioModel.loadModel("checkpoint/audio.pkl")
