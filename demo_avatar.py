@@ -12,16 +12,15 @@ audioModel.loadModel("checkpoint/audio.pkl")
 
 renderModel = RenderModel()
 renderModel.loadModel("checkpoint/render.pth")
-test_video = "官方例子.mp4"
+test_video = "test"
 pkl_path = "video_data/{}/keypoint_rotate.pkl".format(test_video)
 video_path = "video_data/{}/circle.mp4".format(test_video)
 renderModel.reset_charactor(video_path, pkl_path)
 
-wavpath = "video_data/new.wav"
+wavpath = "video_data/audio0.wav"
 rate, wav = wavfile.read(wavpath, mmap=False)
 index_ = 0
 frame_index__ = 0
-
 import sounddevice as sd
 sample_rate = 16000
 samples_per_read = int(0.04 * sample_rate)
