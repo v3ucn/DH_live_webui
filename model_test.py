@@ -23,16 +23,12 @@ def convert_wav(input_file):
 
 if __name__ == '__main__':
     
-    # convert_wav("edge_tts.wav")
+    convert_wav("edge_tts.wav")
 
 
-    checkpoint = torch.load("checkpoint/render.pth")
+# checkpoint = torch.load("checkpoint/epoch_160.pth")
 
-    print(checkpoint.keys())
-
-    # checkpoint = torch.load("checkpoint/epoch-160.pth")
-
-    # print(checkpoint['state_dict']["net_g"].keys())
+# #print(checkpoint['state_dict'].keys())
 
 # print(checkpoint['state_dict']["net_g"].keys())
 
